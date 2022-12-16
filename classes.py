@@ -111,15 +111,17 @@ class AddressBook(UserDict):
         del self.data[name]
 
     def search(self, value):
-        if self.has_record(value):
-            return self.get_record(value)
-
-        for record in self.get_all_record().values():
+        result = []
+        for name, record in self.data.items():
+            if name.lower().find(value) >= 0:
+                result.append(self.data[name])
+                continue
             for phone in record.phones:
-                if phone.value == value:
-                    return record
-
-        raise ValueError('Contact with this value does not exist.')
+                if phone.value.find(value) >= 0:
+                    result.append(self.data[name])
+        if not result:
+            raise ValueError('Could not find anything')
+        return result
 
     def save_to_file(self):
         with open('adress_book', 'wb') as file:

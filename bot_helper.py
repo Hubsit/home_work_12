@@ -44,9 +44,12 @@ def change_phone(data: list) -> str:
 
 
 @input_error
-def search_phone(name: list) -> str:
-    user_name = name[0].capitalize()
-    return users.search(user_name).get_info()
+def search_phone(message: list) -> str:
+    output_message = ''
+    search = users.search(message[0])
+    for record in search:
+        output_message += f'{record.get_info()} \n'
+    return output_message
 
 
 @input_error
@@ -105,7 +108,7 @@ user_commands = {
     'days to birthday': days_to_birthday,
     'add': add_contact,
     'change': change_phone,
-    'phone': search_phone,
+    'search': search_phone,
     'show all': show_all_users,
     'good bye': stop_work,
     'close': stop_work,
@@ -116,13 +119,12 @@ user_commands = {
 
 
 def command_parser(input_message: str):
+    input_command = ''
     for key in user_commands:
         if input_message.lower().startswith(key):
             input_command = key
             break
-    # print(input_command)
     input_data = input_message.lower().replace(input_command, '').strip().split(' ')
-    # print (input_data)
     if input_command in user_commands.keys() and input_data[0]:
         return user_commands.get(input_command)(input_data)
     elif input_command in user_commands.keys() and not input_data[0]:
@@ -153,4 +155,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
